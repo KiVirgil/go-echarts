@@ -18,7 +18,7 @@ import (
     "os"
     "time"
 
-    "github.com/go-echarts/go-echarts/charts"
+    "github.com/KiVirgil/go-echarts/charts"
 )
 
 var nameItems = []string{"衬衫", "牛仔裤", "运动裤", "袜子", "冲锋衣", "羊毛衫"}

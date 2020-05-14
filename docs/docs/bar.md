@@ -82,7 +82,7 @@ func randInt() []int {
 import (
     "..."   // 其他内置库，不一一列出，后面示例代码也是一样
 
-    "github.com/go-echarts/go-echarts/charts"
+    "github.com/KiVirgil/go-echarts/charts"
 )
 
 bar := charts.NewBar()
@@ -295,7 +295,7 @@ bar.SetSeriesOptions(
 
 ### Bar-自定义标记+主题
 ```go
-import "github.com/go-echarts/go-echarts/common"
+import "github.com/KiVirgil/go-echarts/common"
 
 bar := charts.NewBar()
 bar.SetGlobalOptions(

@@ -1,7 +1,7 @@
 package charts
 
 import (
-	"github.com/go-echarts/go-echarts/datatypes"
+	"github.com/KiVirgil/go-echarts/datatypes"
 	"regexp"
 )
 

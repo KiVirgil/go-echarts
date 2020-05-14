@@ -8,7 +8,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/go-echarts/go-echarts/charts"
+	"github.com/KiVirgil/go-echarts/charts"
 	"github.com/gobuffalo/packr"
 )
 

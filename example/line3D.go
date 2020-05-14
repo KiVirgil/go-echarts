@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/go-echarts/go-echarts/charts"
+	"github.com/KiVirgil/go-echarts/charts"
 )
 
 func genLine3dData() [][3]float64 {
