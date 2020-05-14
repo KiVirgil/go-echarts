@@ -2,7 +2,7 @@
 basePath=$(cd `dirname $0`; pwd)
 templatesPath=${basePath}/templates
 datasetsPath=${basePath}/datasets
-cd $GOPATH/src/github.com/gobuffalo/packr/packr
+cd $GOPATH/pkg/mod/github.com/gobuffalo/packr@v1.30.1/packr
 go run main.go -i ${templatesPath}
 go run main.go -i ${datasetsPath}
 
