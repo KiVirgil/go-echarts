@@ -225,8 +225,9 @@ type singleSeries struct {
 	FocusNodeAdjacency bool            `json:"focusNodeAdjacency,omitempty"`
 
 	// Line chart
-	Step   bool `json:"step,omitempty"`
-	Smooth bool `json:"smooth,omitempty"`
+	Step       bool `json:"step,omitempty"`
+	Smooth     bool `json:"smooth,omitempty"`
+	ShowSymbol bool `json:"showSymbol"`
 
 	// Liquid chart
 	LiquidOutlineOpts `json:"outline,omitempty"`

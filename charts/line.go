@@ -15,6 +15,8 @@ type LineOpts struct {
 	Smooth bool
 	// 是否使用阶梯图
 	Step bool
+	// 是否显示 symbol
+	ShowSymbol bool
 	// 使用的 x 轴的 index，在单个图表实例中存在多个 x 轴的时候有用
 	XAxisIndex int
 	// 使用的 y 轴的 index，在单个图表实例中存在多个 y 轴的时候有用
@@ -27,6 +29,7 @@ func (opt *LineOpts) setChartOpt(s *singleSeries) {
 	s.Stack = opt.Stack
 	s.Smooth = opt.Smooth
 	s.Step = opt.Step
+	s.ShowSymbol = opt.ShowSymbol
 	s.XAxisIndex = opt.XAxisIndex
 	s.YAxisIndex = opt.YAxisIndex
 }
