@@ -81,6 +81,10 @@ func (c *Bar) validateOpts() {
 		c.YAxisOptsList[0].Data = c.xAxisData
 		c.XAxisOptsList[0].Data = nil
 	}
+	// 确保 X 轴数标签正确显示
+	for i := 0; i < len(c.XAxisOptsList); i++ {
+		c.XAxisOptsList[i].AxisLabel.Show = true
+	}
 	// 确保 Y 轴数标签正确显示
 	for i := 0; i < len(c.YAxisOptsList); i++ {
 		c.YAxisOptsList[i].AxisLabel.Show = true

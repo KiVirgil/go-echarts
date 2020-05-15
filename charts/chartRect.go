@@ -91,6 +91,10 @@ func (rc *RectChart) Overlap(a ...rectCharter) {
 func (rc *RectChart) validateOpts() {
 	// 确保 X 轴数据不会因为设置了 XAxisOpts 而被抹除
 	rc.XAxisOptsList[0].Data = rc.xAxisData
+	// 确保 X 轴数标签正确显示
+	for i := 0; i < len(rc.XAxisOptsList); i++ {
+		rc.XAxisOptsList[i].AxisLabel.Show = true
+	}
 	// 确保 Y 轴数标签正确显示
 	for i := 0; i < len(rc.YAxisOptsList); i++ {
 		rc.YAxisOptsList[i].AxisLabel.Show = true

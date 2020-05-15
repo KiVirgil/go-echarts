@@ -10,6 +10,10 @@ type LabelTextOpts struct {
 	Show bool `json:"show"`
 	// 文字的颜色
 	Color string `json:"color,omitempty"`
+	// 刻度标签旋转的角度
+	// 在类目轴的类目标签显示不下的时候可以通过旋转防止标签之间重叠
+	// 旋转的角度从 -90 度到 90 度
+	Rotate float32 `json:"rotate,omitempty"`
 	// 标签的位置
 	// 通过相对的百分比或者绝对像素值表示标签相对于图形包围盒左上角的位置。示例：
 	// 绝对的像素值	position: [10, 10],

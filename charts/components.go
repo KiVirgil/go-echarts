@@ -58,6 +58,10 @@ type LegendOpts struct {
 	// bottom 的值可以是像 20 这样的具体像素值，可以是像 '20%' 这样相对于容器高宽的百分比。
 	// 默认自适应。
 	Bottom string `json:"bottom,omitempty"`
+	// 图例列表的布局朝向
+	// 可选 'horizontal', 'vertical'
+	// 默认 'horizontal'
+	Orient string `json:"orient,omitempty"`
 	// Legend 数据项
 	// 如果需要隐藏 Legend 则把 Data 设置为 []string{}
 	Data interface{} `json:"data,omitempty"`
@@ -285,6 +289,20 @@ type XAxisOpts struct {
 	Type string `json:"type,omitempty"`
 	// 是否显示 X 轴
 	Show bool `json:"show,omitempty"`
+	// 刻度标签的内容格式器，支持字符串模板和回调函数两种形式
+	// 1.使用字符串模板，模板变量为刻度默认标签 {value}
+	// formatter: '{value} kg'
+	// 2.使用函数模板，函数参数分别为刻度数值（类目），刻度的索引
+	// formatter: function (value, index) {
+	//    // 格式化成月/日，只在第一个刻度显示年份
+	//    var date = new Date(value);
+	//    var texts = [(date.getMonth() + 1), date.getDate()];
+	//    if (index === 0) {
+	//        texts.unshift(date.getYear());
+	//    }
+	//    return texts.join('/');
+	// }
+	AxisLabel LabelTextOpts `json:"axisLabel,omitempty"`
 	// X 轴数据项
 	Data interface{} `json:"data,omitempty"`
 	// X 坐标轴的分割段数，需要注意的是这个分割段数只是个预估值，
