@@ -116,6 +116,7 @@ type BaseOpts struct {
 	InitOpts              // 图形初始化配置项
 	LegendOpts            // 图例组件配置项
 	legends               []string
+	GridOpts                       // 直角坐标系内绘图网格配置项
 	TooltipOpts                    // 提示框组件配置项
 	ToolboxOpts                    // 工具箱组件配置项
 	TitleOpts                      // 标题组件配置项
@@ -195,6 +196,8 @@ func (opt *BaseOpts) setBaseGlobalOptions(options ...globalOptser) {
 			opt.ToolboxOpts = option.(ToolboxOpts)
 		case TooltipOpts:
 			opt.TooltipOpts = option.(TooltipOpts)
+		case GridOpts:
+			opt.GridOpts = option.(GridOpts)
 		case LegendOpts:
 			opt.LegendOpts = option.(LegendOpts)
 		case ColorOpts:
