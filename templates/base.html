@@ -54,6 +54,7 @@
     {{- if ne .BackgroundColor "" }}
         backgroundColor: {{ .BackgroundColor }}
     {{- end }}
+        animation: false,
     };
     myChart___x__{{ .ChartID }}__x__.setOption(option___x__{{ .ChartID }}__x__);
 
