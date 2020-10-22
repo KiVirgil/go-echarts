@@ -41,7 +41,7 @@ func (TitleOpts) markGlobal() {}
 // LegendOpts is the option set for a legend component.
 type LegendOpts struct {
 	// 是否显示图例
-	Show bool `json:"show,omitempty"`
+	Show interface{} `json:"show,omitempty"`
 	// 图例组件离容器左侧的距离。
 	// left 的值可以是像 20 这样的具体像素值，可以是像 '20%' 这样相对于容器高宽的百分比
 	// 也可以是 'left', 'center', 'right'。
