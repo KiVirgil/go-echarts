@@ -1,8 +1,9 @@
 package charts
 
 import (
-	"github.com/KiVirgil/go-echarts/datatypes"
 	"io"
+
+	"github.com/KiVirgil/go-echarts/datatypes"
 
 	"github.com/KiVirgil/go-echarts/datasets"
 )
@@ -32,7 +33,7 @@ func (c *Map) Add(name string, data map[string]float32, options ...seriesOptser)
 	for k, v := range data {
 		nvs = append(nvs, datatypes.NameValueItem{Name: k, Value: v})
 	}
-	series := singleSeries{Name: name, Type: ChartType.Map, MapType: c.mapType, Data: nvs}
+	series := singleSeries{Name: name, Type: ChartType.Map, MapType: c.mapType, ShowLegendSymbol: false, Data: nvs}
 	series.setSingleSeriesOpts(options...)
 	c.Series = append(c.Series, series)
 	c.setColor(options...)

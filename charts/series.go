@@ -238,8 +238,9 @@ type singleSeries struct {
 	IsWaveAnimation   bool `json:"waveAnimation"`
 
 	// Map chart
-	MapType     string `json:"map,omitempty"`
-	CoordSystem string `json:"coordinateSystem,omitempty"`
+	MapType          string `json:"map,omitempty"`
+	CoordSystem      string `json:"coordinateSystem,omitempty"`
+	ShowLegendSymbol bool   `json:"showLegendSymbol"`
 
 	// Pie chart
 	RoseType interface{} `json:"roseType,omitempty"`
