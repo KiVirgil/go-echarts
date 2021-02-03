@@ -1,32 +1,32 @@
 package charts
 
 import (
+	"io/ioutil"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
+const host = "https://go-echarts.github.io/go-echarts-assets/assets/"
+
 func TestBarAssetsBeforeRender(t *testing.T) {
 	bar := NewBar()
 	assert.Equal(t, bar.JSAssets.Values, []string{"echarts.min.js"})
-	assert.Equal(t, bar.CSSAssets.Values, []string{"bulma.min.css"})
 }
 
 func TestBarAssetsAfterRender(t *testing.T) {
 	bar := NewBar()
-	err := bar.Render()
+	err := bar.Render(ioutil.Discard)
 	assert.NoError(t, err)
-	var host = "http://chenjiandongx.com/go-echarts-assets/assets/"
-	assert.Equal(t, bar.JSAssets.Values, []string{host + "echarts.min.js"})
-	assert.Equal(t, bar.CSSAssets.Values, []string{host + "bulma.min.css"})
+	assert.Equal(t, []string{host + "echarts.min.js"}, bar.JSAssets.Values)
 }
 
 func TestBarDefaultValue(t *testing.T) {
 	bar := NewBar()
-	err := bar.Render()
+	err := bar.Render(ioutil.Discard)
 	assert.NoError(t, err)
-	assert.Equal(t, bar.Width, "900px")
-	assert.Equal(t, bar.Height, "500px")
-	assert.Equal(t, bar.PageTitle, "Awesome go-echarts")
-	assert.Equal(t, bar.AssetsHost, "http://chenjiandongx.com/go-echarts-assets/assets/")
+	assert.Equal(t, "900px", bar.Initialization.Width)
+	assert.Equal(t, "500px", bar.Initialization.Height)
+	assert.Equal(t, "Awesome go-echarts", bar.PageTitle)
+	assert.Equal(t, host, bar.AssetsHost)
 }

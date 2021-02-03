@@ -1,63 +1,42 @@
 package charts
 
 import (
-	"io"
+	"github.com/KiVirgil/go-echarts/v2/opts"
+	"github.com/KiVirgil/go-echarts/v2/render"
+	"github.com/KiVirgil/go-echarts/v2/types"
 )
 
 // Sankey represents a sankey chart.
 type Sankey struct {
-	BaseOpts
-	Series
+	BaseConfiguration
 }
 
-// SankeyLink represents relationship between two data nodes.
-type SankeyLink struct {
-	// 边的源节点名称的字符串，也支持使用数字表示源节点的索引
-	Source interface{} `json:"source,omitempty"`
-	// 边的目标节点名称的字符串，也支持使用数字表示源节点的索引
-	Target interface{} `json:"target,omitempty"`
-	// 边的数值，可以在力引导布局中用于映射到边的长度
-	Value float32 `json:"value,omitempty"`
-}
-
-// SankeyNode represents a data node.
-type SankeyNode struct {
-	// 数据项名称
-	Name string `json:"name,omitempty"`
-	// 数据项值
-	Value string `json:"value,omitempty"`
-}
-
-func (Sankey) chartType() string { return ChartType.Sankey }
+// Type returns the chart type.
+func (Sankey) Type() string { return types.ChartSankey }
 
 // NewSankey creates a new sankey chart.
-func NewSankey(routers ...RouterOpts) *Sankey {
-	chart := new(Sankey)
-	chart.initBaseOpts(routers...)
-	return chart
+func NewSankey() *Sankey {
+	c := &Sankey{}
+	c.initBaseConfiguration()
+	c.Renderer = render.NewChartRender(c, c.Validate)
+	return c
 }
 
-// Add adds new data sets.
-func (c *Sankey) Add(name string, nodes []SankeyNode, links []SankeyLink, options ...seriesOptser) *Sankey {
-	series := singleSeries{Name: name, Type: ChartType.Sankey, Data: nodes, Links: links}
-	series.setSingleSeriesOpts(options...)
-	c.Series = append(c.Series, series)
+// AddSeries adds new data sets.
+func (c *Sankey) AddSeries(name string, nodes []opts.SankeyNode, links []opts.SankeyLink, options ...SeriesOpts) *Sankey {
+	series := SingleSeries{Name: name, Type: types.ChartSankey, Data: nodes, Links: links}
+	series.configureSeriesOpts(options...)
+	c.MultiSeries = append(c.MultiSeries, series)
 	return c
 }
 
 // SetGlobalOptions sets options for the Sankey instance.
-func (c *Sankey) SetGlobalOptions(options ...globalOptser) *Sankey {
-	c.BaseOpts.setBaseGlobalOptions(options...)
+func (c *Sankey) SetGlobalOptions(options ...GlobalOpts) *Sankey {
+	c.BaseConfiguration.setBaseGlobalOptions(options...)
 	return c
 }
 
-func (c *Sankey) validateOpts() {
-	c.validateAssets(c.AssetsHost)
-}
-
-// Render renders the chart and writes the output to given writers.
-func (c *Sankey) Render(w ...io.Writer) error {
-	c.insertSeriesColors(c.appendColor)
-	c.validateOpts()
-	return renderToWriter(c, "chart", []string{}, w...)
+// Validate
+func (c *Sankey) Validate() {
+	c.Assets.Validate(c.AssetsHost)
 }

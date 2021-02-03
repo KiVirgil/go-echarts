@@ -1,56 +1,44 @@
 package charts
 
 import (
-	"fmt"
-	"github.com/KiVirgil/go-echarts/datatypes"
-	"io"
 	"log"
 
-	"github.com/KiVirgil/go-echarts/datasets"
+	"github.com/KiVirgil/go-echarts/v2/datasets"
+	"github.com/KiVirgil/go-echarts/v2/opts"
+	"github.com/KiVirgil/go-echarts/v2/render"
+	"github.com/KiVirgil/go-echarts/v2/types"
 )
-
-// GeoComponentOpts is the option set for geo component.
-type GeoComponentOpts struct {
-	Map string `json:"map,omitempty"`
-}
 
 // Geo represents a geo chart.
 type Geo struct {
-	BaseOpts
-	Series
-	GeoComponentOpts
+	BaseConfiguration
 }
 
-func (Geo) chartType() string { return ChartType.Geo }
+// Type returns the chart type.
+func (Geo) Type() string { return types.ChartGeo }
 
 var geoFormatter = `function (params) {
 		return params.name + ' : ' + params.value[2];
 }`
 
 // NewGeo creates a new geo chart.
-func NewGeo(mapType string, routers ...RouterOpts) *Geo {
-	chart := new(Geo)
-	chart.initBaseOpts(routers...)
-	chart.HasGeo = true
-	chart.JSAssets.Add("maps/" + datasets.MapFileNames[mapType] + ".js")
-	chart.GeoComponentOpts.Map = mapType
-	return chart
+func NewGeo() *Geo {
+	c := &Geo{}
+	c.initBaseConfiguration()
+	c.Renderer = render.NewChartRender(c, c.Validate)
+	c.hasGeo = true
+	return c
 }
 
-// Add adds new data sets.
-// geoType 是 Geo 图形的种类，有以下三种类型可选
-// common.ChartType.Scatter
-// common.ChartType.EffectScatter
-// common.ChartType.HeatMap
-func (c *Geo) Add(name, geoType string, data map[string]float32, options ...seriesOptser) *Geo {
-	nvs := make([]datatypes.NameValueItem, 0)
-	for k, v := range data {
-		nvs = append(nvs, datatypes.NameValueItem{Name: k, Value: c.extendValue(k, v)})
-	}
-	series := singleSeries{Name: name, Type: geoType, Data: nvs, CoordSystem: ChartType.Geo}
-	series.setSingleSeriesOpts(options...)
-	c.Series = append(c.Series, series)
-	c.setColor(options...)
+// AddSeries adds new data sets.
+// geoType options:
+// * types.ChartScatter
+// * types.ChartEffectScatter
+// * types.ChartHeatMap
+func (c *Geo) AddSeries(name, geoType string, data []opts.GeoData, options ...SeriesOpts) *Geo {
+	series := SingleSeries{Name: name, Type: geoType, Data: data, CoordSystem: types.ChartGeo}
+	series.configureSeriesOpts(options...)
+	c.MultiSeries = append(c.MultiSeries, series)
 	return c
 }
 
@@ -58,7 +46,7 @@ func (c *Geo) extendValue(region string, v float32) []float32 {
 	res := make([]float32, 0)
 	tv := datasets.Coordinates[region]
 	if tv == [2]float32{0, 0} {
-		log.Println(fmt.Sprintf("No coordinate is specified for %s", region))
+		log.Printf("goecharts: No coordinate is specified for %s\n", region)
 	} else {
 		res = append(tv[:], v)
 	}
@@ -66,21 +54,15 @@ func (c *Geo) extendValue(region string, v float32) []float32 {
 }
 
 // SetGlobalOptions sets options for the Geo instance.
-func (c *Geo) SetGlobalOptions(options ...globalOptser) *Geo {
-	c.BaseOpts.setBaseGlobalOptions(options...)
+func (c *Geo) SetGlobalOptions(options ...GlobalOpts) *Geo {
+	c.BaseConfiguration.setBaseGlobalOptions(options...)
 	return c
 }
 
-func (c *Geo) validateOpts() {
-	if c.TooltipOpts.Formatter == "" {
-		c.TooltipOpts.Formatter = FuncOpts(geoFormatter)
+// Validate
+func (c *Geo) Validate() {
+	if c.Tooltip.Formatter == "" {
+		c.Tooltip.Formatter = opts.FuncOpts(geoFormatter)
 	}
-	c.validateAssets(c.AssetsHost)
-}
-
-// Render renders the chart and writes the output to given writers.
-func (c *Geo) Render(w ...io.Writer) error {
-	c.insertSeriesColors(c.appendColor)
-	c.validateOpts()
-	return renderToWriter(c, "chart", []string{}, w...)
+	c.Assets.Validate(c.AssetsHost)
 }

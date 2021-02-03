@@ -1,32 +1,44 @@
 package charts
 
+import (
+	"github.com/KiVirgil/go-echarts/v2/opts"
+	"github.com/KiVirgil/go-echarts/v2/render"
+	"github.com/KiVirgil/go-echarts/v2/types"
+)
+
 // BoxPlot represents a boxplot chart.
 type BoxPlot struct {
 	RectChart
 }
 
-func (BoxPlot) chartType() string { return ChartType.BoxPlot }
+// Type returns the chart type.
+func (BoxPlot) Type() string { return types.ChartBoxPlot }
 
 // NewBoxPlot creates a new boxplot chart.
-func NewBoxPlot(routers ...RouterOpts) *BoxPlot {
-	chart := new(BoxPlot)
-	chart.initBaseOpts(routers...)
-	chart.initXYOpts()
-	chart.HasXYAxis = true
-	return chart
-}
-
-// AddXAxis adds the X axis.
-func (c *BoxPlot) AddXAxis(xAxis interface{}) *BoxPlot {
-	c.xAxisData = xAxis
+func NewBoxPlot() *BoxPlot {
+	c := &BoxPlot{}
+	c.initBaseConfiguration()
+	c.Renderer = render.NewChartRender(c, c.Validate)
+	c.hasXYAxis = true
 	return c
 }
 
-// AddYAxis adds the Y axis.
-func (c *BoxPlot) AddYAxis(name string, yAxis interface{}, options ...seriesOptser) *BoxPlot {
-	series := singleSeries{Name: name, Type: ChartType.BoxPlot, Data: yAxis}
-	series.setSingleSeriesOpts(options...)
-	c.Series = append(c.Series, series)
-	c.setColor(options...)
+// SetXAxis adds the X axis.
+func (c *BoxPlot) SetXAxis(x interface{}) *BoxPlot {
+	c.xAxisData = x
 	return c
+}
+
+// AddSeries adds the new series.
+func (c *BoxPlot) AddSeries(name string, data []opts.BoxPlotData, options ...SeriesOpts) *BoxPlot {
+	series := SingleSeries{Name: name, Type: types.ChartBoxPlot, Data: data}
+	series.configureSeriesOpts(options...)
+	c.MultiSeries = append(c.MultiSeries, series)
+	return c
+}
+
+// Validate validates the given configuration.
+func (c *BoxPlot) Validate() {
+	c.XAxisList[0].Data = c.xAxisData
+	c.Assets.Validate(c.AssetsHost)
 }

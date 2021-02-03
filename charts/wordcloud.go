@@ -1,36 +1,18 @@
 package charts
 
 import (
-	"github.com/KiVirgil/go-echarts/datatypes"
-	"io"
+	"github.com/KiVirgil/go-echarts/v2/opts"
+	"github.com/KiVirgil/go-echarts/v2/render"
+	"github.com/KiVirgil/go-echarts/v2/types"
 )
 
 // WordCloud represents a word cloud chart.
 type WordCloud struct {
-	BaseOpts
-	Series
+	BaseConfiguration
 }
 
-func (WordCloud) chartType() string { return ChartType.WordCloud }
-
-// WordCloudOpts is the option set for a word cloud chart.
-type WordCloudOpts struct {
-	// shape of WordCloud
-	// Optional: "circle", "rect", "roundRect", "triangle", "diamond", "pin", "arrow"
-	Shape string
-	// range of font size
-	SizeRange []float32
-	// range of font rotation angle
-	RotationRange []float32
-}
-
-func (WordCloudOpts) markSeries() {}
-
-func (opt *WordCloudOpts) setChartOpt(s *singleSeries) {
-	s.Shape = opt.Shape
-	s.SizeRange = opt.SizeRange
-	s.RotationRange = opt.RotationRange
-}
+// Type returns the chart type.
+func (WordCloud) Type() string { return types.ChartWordCloud }
 
 var wcTextColor = `function () {
 	return 'rgb(' + [
@@ -40,49 +22,38 @@ var wcTextColor = `function () {
 }`
 
 // NewWordCloud creates a new word cloud chart.
-func NewWordCloud(routers ...RouterOpts) *WordCloud {
-	chart := new(WordCloud)
-	chart.initBaseOpts(routers...)
-	chart.JSAssets.Add("echarts-wordcloud.min.js")
-	return chart
+func NewWordCloud() *WordCloud {
+	c := &WordCloud{}
+	c.initBaseConfiguration()
+	c.Renderer = render.NewChartRender(c, c.Validate)
+	c.JSAssets.Add("echarts-wordcloud.min.js")
+	return c
 }
 
-// Add adds new data sets.
-func (c *WordCloud) Add(name string, data map[string]interface{}, options ...seriesOptser) *WordCloud {
-	nvs := make([]datatypes.NameValueItem, 0)
-	for k, v := range data {
-		nvs = append(nvs, datatypes.NameValueItem{Name: k, Value: v})
-	}
-	series := singleSeries{Name: name, Type: ChartType.WordCloud, Data: nvs}
-	series.setSingleSeriesOpts(options...)
+// AddSeries adds new data sets.
+func (c *WordCloud) AddSeries(name string, data []opts.WordCloudData, options ...SeriesOpts) *WordCloud {
+	series := SingleSeries{Name: name, Type: types.ChartWordCloud, Data: data}
+	series.configureSeriesOpts(options...)
 
 	// set default random color for WordCloud chart
-	if series.TextStyleOpts.Normal == nil {
-		series.TextStyleOpts.Normal = &TextStyleOpts{Color: FuncOpts(wcTextColor)}
-	} else {
-		if series.TextStyleOpts.Normal.Color == "" {
-			series.TextStyleOpts.Normal.Color = FuncOpts(wcTextColor)
-		}
+	if series.TextStyle == nil {
+		series.TextStyle = &opts.TextStyle{Normal: &opts.TextStyle{}}
+	}
+	if series.TextStyle.Normal.Color == "" {
+		series.TextStyle.Normal.Color = opts.FuncOpts(wcTextColor)
 	}
 
-	c.Series = append(c.Series, series)
-	c.setColor(options...)
+	c.MultiSeries = append(c.MultiSeries, series)
 	return c
 }
 
 // SetGlobalOptions sets options for the WordCloud instance.
-func (c *WordCloud) SetGlobalOptions(options ...globalOptser) *WordCloud {
-	c.BaseOpts.setBaseGlobalOptions(options...)
+func (c *WordCloud) SetGlobalOptions(options ...GlobalOpts) *WordCloud {
+	c.BaseConfiguration.setBaseGlobalOptions(options...)
 	return c
 }
 
-func (c *WordCloud) validateOpts() {
-	c.validateAssets(c.AssetsHost)
-}
-
-// Render renders the chart and writes the output to given writers.
-func (c *WordCloud) Render(w ...io.Writer) error {
-	c.insertSeriesColors(c.appendColor)
-	c.validateOpts()
-	return renderToWriter(c, "chart", []string{}, w...)
+// Validate
+func (c *WordCloud) Validate() {
+	c.Assets.Validate(c.AssetsHost)
 }

@@ -1,47 +1,43 @@
 package charts
 
+import (
+	"github.com/KiVirgil/go-echarts/v2/opts"
+	"github.com/KiVirgil/go-echarts/v2/render"
+	"github.com/KiVirgil/go-echarts/v2/types"
+)
+
 // HeatMap represents a heatmap chart.
 type HeatMap struct {
 	RectChart
 }
 
-func (HeatMap) chartType() string { return ChartType.HeatMap }
-
-// HeatMapOpts is the option set for a heatmap chart.
-type HeatMapOpts struct {
-	//使用的 x 轴的 index，在单个图表实例中存在多个 x 轴的时候有用
-	XAxisIndex int
-	//使用的 y 轴的 index，在单个图表实例中存在多个 y 轴的时候有用
-	YAxisIndex int
-}
-
-func (HeatMapOpts) markSeries() {}
-
-func (opt *HeatMapOpts) setChartOpt(s *singleSeries) {
-	s.XAxisIndex = opt.XAxisIndex
-	s.YAxisIndex = opt.YAxisIndex
-}
+// Type returns the chart type.
+func (HeatMap) Type() string { return types.ChartHeatMap }
 
 // NewHeatMap creates a new heatmap chart.
-func NewHeatMap(routers ...RouterOpts) *HeatMap {
-	chart := new(HeatMap)
-	chart.initBaseOpts(routers...)
-	chart.initXYOpts()
-	chart.HasXYAxis = true
-	return chart
-}
-
-// AddXAxis adds the X axis.
-func (c *HeatMap) AddXAxis(xAxis interface{}) *HeatMap {
-	c.xAxisData = xAxis
+func NewHeatMap() *HeatMap {
+	c := &HeatMap{}
+	c.initBaseConfiguration()
+	c.Renderer = render.NewChartRender(c, c.Validate)
+	c.hasXYAxis = true
 	return c
 }
 
-// AddYAxis adds the Y axis.
-func (c *HeatMap) AddYAxis(name string, yAxis interface{}, options ...seriesOptser) *HeatMap {
-	series := singleSeries{Name: name, Type: ChartType.HeatMap, Data: yAxis}
-	series.setSingleSeriesOpts(options...)
-	c.Series = append(c.Series, series)
-	c.setColor(options...)
+// SetXAxis adds the X axis.
+func (c *HeatMap) SetXAxis(x interface{}) *HeatMap {
+	c.xAxisData = x
 	return c
+}
+
+// AddSeries adds the new series.
+func (c *HeatMap) AddSeries(name string, data []opts.HeatMapData, options ...SeriesOpts) *HeatMap {
+	series := SingleSeries{Name: name, Type: types.ChartHeatMap, Data: data}
+	series.configureSeriesOpts(options...)
+	c.MultiSeries = append(c.MultiSeries, series)
+	return c
+}
+
+// Validate
+func (c *HeatMap) Validate() {
+	c.Assets.Validate(c.AssetsHost)
 }

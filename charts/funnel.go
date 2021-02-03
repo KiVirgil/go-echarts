@@ -1,51 +1,42 @@
 package charts
 
 import (
-	"github.com/KiVirgil/go-echarts/datatypes"
-	"io"
+	"github.com/KiVirgil/go-echarts/v2/opts"
+	"github.com/KiVirgil/go-echarts/v2/render"
+	"github.com/KiVirgil/go-echarts/v2/types"
 )
 
 // Funnel represents a funnel chart.
 type Funnel struct {
-	BaseOpts
-	Series
+	BaseConfiguration
 }
 
-func (Funnel) chartType() string { return ChartType.Funnel }
+// Type returns the chart type.
+func (Funnel) Type() string { return types.ChartFunnel }
 
 // NewFunnel creates a new funnel chart.
-func NewFunnel(routers ...RouterOpts) *Funnel {
-	chart := new(Funnel)
-	chart.initBaseOpts(routers...)
-	return chart
+func NewFunnel() *Funnel {
+	c := &Funnel{}
+	c.initBaseConfiguration()
+	c.Renderer = render.NewChartRender(c, c.Validate)
+	return c
 }
 
-// Add adds new data sets.
-func (c *Funnel) Add(name string, data map[string]interface{}, options ...seriesOptser) *Funnel {
-	nvs := make([]datatypes.NameValueItem, 0)
-	for k, v := range data {
-		nvs = append(nvs, datatypes.NameValueItem{Name: k, Value: v})
-	}
-	series := singleSeries{Name: name, Type: ChartType.Funnel, Data: nvs}
-	series.setSingleSeriesOpts(options...)
-	c.Series = append(c.Series, series)
-	c.setColor(options...)
+// AddSeries adds new data sets.
+func (c *Funnel) AddSeries(name string, data []opts.FunnelData, options ...SeriesOpts) *Funnel {
+	series := SingleSeries{Name: name, Type: types.ChartFunnel, Data: data}
+	series.configureSeriesOpts(options...)
+	c.MultiSeries = append(c.MultiSeries, series)
 	return c
 }
 
 // SetGlobalOptions sets options for the Funnel instance.
-func (c *Funnel) SetGlobalOptions(options ...globalOptser) *Funnel {
-	c.BaseOpts.setBaseGlobalOptions(options...)
+func (c *Funnel) SetGlobalOptions(options ...GlobalOpts) *Funnel {
+	c.BaseConfiguration.setBaseGlobalOptions(options...)
 	return c
 }
 
-func (c *Funnel) validateOpts() {
-	c.validateAssets(c.AssetsHost)
-}
-
-// Render renders the chart and writes the output to given writers.
-func (c *Funnel) Render(w ...io.Writer) error {
-	c.insertSeriesColors(c.appendColor)
-	c.validateOpts()
-	return renderToWriter(c, "chart", []string{}, w...)
+// Validate
+func (c *Funnel) Validate() {
+	c.Assets.Validate(c.AssetsHost)
 }

@@ -1,58 +1,51 @@
 package charts
 
 import (
-	"io"
-
-	"github.com/KiVirgil/go-echarts/datatypes"
-
-	"github.com/KiVirgil/go-echarts/datasets"
+	"github.com/KiVirgil/go-echarts/v2/datasets"
+	"github.com/KiVirgil/go-echarts/v2/opts"
+	"github.com/KiVirgil/go-echarts/v2/render"
+	"github.com/KiVirgil/go-echarts/v2/types"
 )
 
 // Map represents a map chart.
 type Map struct {
-	BaseOpts
-	Series
+	BaseConfiguration
 
 	mapType string
 }
 
-func (Map) chartType() string { return ChartType.Map }
+// Type returns the chart type.
+func (Map) Type() string { return types.ChartMap }
 
 // NewMap creates a new map chart.
-func NewMap(mapType string, routers ...RouterOpts) *Map {
-	chart := new(Map)
-	chart.mapType = mapType
-	chart.initBaseOpts(routers...)
-	chart.JSAssets.Add("maps/" + datasets.MapFileNames[mapType] + ".js")
-	return chart
+func NewMap() *Map {
+	c := &Map{}
+	c.initBaseConfiguration()
+	c.Renderer = render.NewChartRender(c, c.Validate)
+	return c
 }
 
-// Add adds new data sets.
-func (c *Map) Add(name string, data map[string]float32, options ...seriesOptser) *Map {
-	nvs := make([]datatypes.NameValueItem, 0)
-	for k, v := range data {
-		nvs = append(nvs, datatypes.NameValueItem{Name: k, Value: v})
-	}
-	series := singleSeries{Name: name, Type: ChartType.Map, MapType: c.mapType, ShowLegendSymbol: false, Data: nvs}
-	series.setSingleSeriesOpts(options...)
-	c.Series = append(c.Series, series)
-	c.setColor(options...)
+// RegisterMapType
+func (c *Map) RegisterMapType(mapType string) {
+	c.mapType = mapType
+	c.JSAssets.Add("maps/" + datasets.MapFileNames[mapType] + ".js")
+}
+
+// AddSeries adds new data sets.
+func (c *Map) AddSeries(name string, data []opts.MapData, options ...SeriesOpts) *Map {
+	series := SingleSeries{Name: name, Type: types.ChartMap, MapType: c.mapType, Data: data}
+	series.configureSeriesOpts(options...)
+	c.MultiSeries = append(c.MultiSeries, series)
 	return c
 }
 
 // SetGlobalOptions sets options for the Map instance.
-func (c *Map) SetGlobalOptions(options ...globalOptser) *Map {
-	c.BaseOpts.setBaseGlobalOptions(options...)
+func (c *Map) SetGlobalOptions(options ...GlobalOpts) *Map {
+	c.BaseConfiguration.setBaseGlobalOptions(options...)
 	return c
 }
 
-func (c *Map) validateOpts() {
-	c.validateAssets(c.AssetsHost)
-}
-
-// Render renders the chart and writes the output to given writers.
-func (c *Map) Render(w ...io.Writer) error {
-	c.insertSeriesColors(c.appendColor)
-	c.validateOpts()
-	return renderToWriter(c, "chart", []string{}, w...)
+// Validate
+func (c *Map) Validate() {
+	c.Assets.Validate(c.AssetsHost)
 }
