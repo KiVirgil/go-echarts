@@ -28,6 +28,8 @@ type BaseConfiguration struct {
 	MultiSeries
 	XYAxis
 
+	opts.Grid
+
 	opts.XAxis3D
 	opts.YAxis3D
 	opts.ZAxis3D
@@ -46,6 +48,7 @@ type BaseConfiguration struct {
 	// ParallelAxisList represents the component list which is the coordinate axis for parallel coordinate.
 	ParallelAxisList []opts.ParallelAxis
 
+	hasGrid       bool
 	has3DAxis     bool
 	hasXYAxis     bool
 	hasGeo        bool
@@ -100,6 +103,10 @@ func (bc *BaseConfiguration) JSON() map[string]interface{} {
 		obj["yAxis"] = bc.YAxisList
 	}
 
+	if bc.hasGrid {
+		obj["grid"] = bc.Grid
+	}
+
 	if bc.has3DAxis {
 		obj["xAxis3D"] = bc.XAxis3D
 		obj["yAxis3D"] = bc.YAxis3D
@@ -114,6 +121,8 @@ func (bc *BaseConfiguration) JSON() map[string]interface{} {
 	if bc.BackgroundColor != "" {
 		obj["backgroundColor"] = bc.BackgroundColor
 	}
+
+	obj["animation"] = bc.Animation
 
 	return obj
 }
@@ -132,8 +141,7 @@ func (bc *BaseConfiguration) initBaseConfiguration() {
 
 func (bc *BaseConfiguration) initSeriesColors() {
 	bc.Colors = []string{
-		"#c23531", "#2f4554", "#61a0a8", "#d48265", "#91c7ae",
-		"#749f83", "#ca8622", "#bda29a", "#6e7074", "#546570",
+		"#5470c6", "#91cc75", "#fac858", "#ee6666", "#73c0de", "#3ba272", "#fc8452", "#9a60b4", "#ea7ccc",
 	}
 }
 
@@ -246,6 +254,14 @@ func WithParallelAxisList(opt []opts.ParallelAxis) GlobalOpts {
 func WithColorsOpts(opt opts.Colors) GlobalOpts {
 	return func(bc *BaseConfiguration) {
 		bc.insertSeriesColors(opt)
+	}
+}
+
+// WithGridOpts
+func WithGridOpts(opt opts.Grid) GlobalOpts {
+	return func(bc *BaseConfiguration) {
+		bc.hasGrid = true
+		bc.Grid = opt
 	}
 }
 

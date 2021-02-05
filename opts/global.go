@@ -30,6 +30,9 @@ type Initialization struct {
 	// BackgroundColor of canvas
 	BackgroundColor string
 
+	// Whether to enable animation
+	Animation bool
+
 	// Chart unique ID
 	ChartID string
 
@@ -38,6 +41,8 @@ type Initialization struct {
 
 	// Theme of chart
 	Theme string `default:"white"`
+
+	Locale string `default:"EN"`
 }
 
 // Validate validates the initialization configurations.
@@ -250,6 +255,21 @@ type Legend struct {
 
 	// Legend text style.
 	TextStyle *TextStyle `json:"textStyle,omitempty"`
+
+	// Formatter of legend label, which supports string template and callback function.
+	//
+	// Example:
+	//
+	// Use string template; template variable is the default label of legend {value}
+	// formatter: '{value} kg'
+	//
+	// Use callback function; function parameters are axis index
+	//
+	//
+	//  formatter: function (value) {
+	//    return value + 'kg';
+	//}
+	Formatter string `json:"formatter,omitempty"`
 }
 
 // Tooltip is the option set for a tooltip component.
@@ -987,6 +1007,40 @@ func (opt *Assets) Validate(host string) {
 			opt.CSSAssets.Values[i] = host + opt.CSSAssets.Values[i]
 		}
 	}
+}
+
+// Grid is the option set for a tooltip component.
+type Grid struct {
+	// Whether to show the grid in rectangular coordinate.
+	Show bool `json:"show,omitempty"`
+	// Distance between parallel component and the left side of the container.
+	// Left value can be instant pixel value like 20.
+	// It can also be a percentage value relative to container width like '20%';
+	// and it can also be 'left', 'center', or 'right'.
+	// If the left value is set to be 'left', 'center', or 'right',
+	// then the component will be aligned automatically based on position.
+	Left string `json:"left,omitempty"`
+
+	// Distance between parallel component and the top side of the container.
+	// Top value can be instant pixel value like 20.
+	// It can also be a percentage value relative to container width like '20%'.
+	// and it can also be 'top', 'middle', or 'bottom'.
+	// If the left value is set to be 'top', 'middle', or 'bottom',
+	// then the component will be aligned automatically based on position.
+	Top string `json:"top,omitempty"`
+
+	// Distance between parallel component and the right side of the container.
+	// Right value can be instant pixel value like 20.
+	// It can also be a percentage value relative to container width like '20%'.
+	Right string `json:"right,omitempty"`
+
+	// Distance between parallel component and the bottom side of the container.
+	// Bottom value can be instant pixel value like 20.
+	// It can also be a percentage value relative to container width like '20%'.
+	Bottom string `json:"bottom,omitempty"`
+
+	// Whether the grid region contains axis tick label of axis.
+	ContainLabel bool `json:"containLabel,omitempty"`
 }
 
 // XAxis3D contains options for X axis in the 3D coordinate.

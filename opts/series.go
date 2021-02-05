@@ -6,7 +6,7 @@ import "fmt"
 // https://echarts.apache.org/en/option.html#series-line.label
 type Label struct {
 	// Whether to show label.
-	Show bool `json:"show,omitempty"`
+	Show bool `json:"show"`
 
 	// Color is the text color.
 	// If set as "auto", the color will assigned as visual color, such as series color.
@@ -69,6 +69,15 @@ type ItemStyle struct {
 	// BorderColor is the hart border color
 	// Kline  Up candle border color
 	BorderColor string `json:"borderColor,omitempty"`
+
+	// Border width of title.
+	BorderWidth float32 `json:"borderWidth,omitempty"`
+
+	// The radius of rounded corner. Its unit is px. And it supports use array to respectively specify the 4 corner radiuses.
+	// For example:
+	// borderRadius: 5, // consistently set the size of 4 rounded corners
+	// borderRadius: [5, 5, 0, 0] // (clockwise upper left, upper right, bottom right and bottom left)
+	BorderRadius interface{} `json:"borderRadius,omitempty"`
 
 	// Kline Down candle border color
 	BorderColor0 string `json:"borderColor0,omitempty"`

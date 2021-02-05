@@ -36,8 +36,9 @@ type SingleSeries struct {
 	IsWaveAnimation bool `json:"waveAnimation"`
 
 	// Map
-	MapType     string `json:"map,omitempty"`
-	CoordSystem string `json:"coordinateSystem,omitempty"`
+	MapType          string `json:"map,omitempty"`
+	CoordSystem      string `json:"coordinateSystem,omitempty"`
+	ShowLegendSymbol bool   `json:"showLegendSymbol"`
 
 	// Pie
 	RoseType interface{} `json:"roseType,omitempty"`
@@ -195,6 +196,17 @@ func WithWorldCloudChartOpts(opt opts.WordCloudChart) SeriesOpts {
 		s.Shape = opt.Shape
 		s.SizeRange = opt.SizeRange
 		s.RotationRange = opt.RotationRange
+	}
+}
+
+// WithMarkLineStyleOpts
+func WithMarkLineStyleOpts(opt opts.MarkLineStyle) SeriesOpts {
+	return func(s *SingleSeries) {
+		if s.MarkLines == nil {
+			s.MarkLines = &opts.MarkLines{}
+		}
+
+		s.MarkLines.MarkLineStyle = opt
 	}
 }
 

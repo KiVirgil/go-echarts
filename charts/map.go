@@ -33,7 +33,7 @@ func (c *Map) RegisterMapType(mapType string) {
 
 // AddSeries adds new data sets.
 func (c *Map) AddSeries(name string, data []opts.MapData, options ...SeriesOpts) *Map {
-	series := SingleSeries{Name: name, Type: types.ChartMap, MapType: c.mapType, Data: data}
+	series := SingleSeries{Name: name, Type: types.ChartMap, MapType: c.mapType, ShowLegendSymbol: false, Data: data}
 	series.configureSeriesOpts(options...)
 	c.MultiSeries = append(c.MultiSeries, series)
 	return c
