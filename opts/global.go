@@ -161,7 +161,7 @@ type Title struct {
 // https://echarts.apache.org/en/option.html#legend
 type Legend struct {
 	// Whether to show the Legend, default true.
-	Show bool `json:"show"`
+	Show interface{} `json:"show,omitempty"`
 
 	// Distance between legend component and the left side of the container.
 	// left value can be instant pixel value like 20; it can also be a percentage
@@ -717,6 +717,17 @@ type VisualMap struct {
 
 	// Define visual channels that will mapped from dataValues that are in selected range.
 	InRange *VisualMapInRange `json:"inRange,omitempty"`
+
+	// the formatter tool for label.
+
+	// If it was set as a string, it refers to a template, for instance: aaaa{value}bbbb, where {value} represents the value of the edge of the seleted range.
+
+	// If it was set as a Function, it refers to a callback function, for instance:
+
+	// formatter: function (value) {
+	// 	return 'aaaa' + value + 'bbbb';
+	// }
+	Formatter string `json:"formatter,omitempty"`
 }
 
 // VisualMapInRange is a visual map instance in a range.
