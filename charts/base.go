@@ -32,6 +32,7 @@ type BaseConfiguration struct {
 	XYAxis
 
 	opts.Grid
+	opts.TextStyle
 
 	opts.XAxis3D
 	opts.YAxis3D
@@ -133,6 +134,8 @@ func (bc *BaseConfiguration) JSON() map[string]interface{} {
 	}
 
 	obj["animation"] = bc.Animation
+
+	obj["textStyle"] = bc.TextStyle
 
 	return obj
 }
@@ -296,6 +299,13 @@ func WithGridOpts(opt opts.Grid) GlobalOpts {
 	return func(bc *BaseConfiguration) {
 		bc.hasGrid = true
 		bc.Grid = opt
+	}
+}
+
+// WithTextStyle
+func WithTextStyle(opt opts.TextStyle) GlobalOpts {
+	return func(bc *BaseConfiguration) {
+		bc.TextStyle = opt
 	}
 }
 
