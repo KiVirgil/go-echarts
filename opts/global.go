@@ -557,6 +557,10 @@ type XAxis struct {
 	// This is unavailable for category axis.
 	SplitNumber int `json:"splitNumber,omitempty"`
 
+	MinInterval float64 `json:"minInterval,omitempty"`
+	MaxInterval float64 `json:"maxInterval,omitempty"`
+	Interval    float64 `json:"interval,omitempty"`
+
 	// It is available only in numerical axis, i.e., type: 'value'.
 	// It specifies whether not to contain zero position of axis compulsively.
 	// When it is set to be true, the axis may not contain zero position,
